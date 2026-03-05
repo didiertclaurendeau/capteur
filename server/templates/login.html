@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block header %}Connexion{% endblock %}
+
+{% block extra_style %}
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 50px auto;
+        padding: 40px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .login-form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #333;
+        font-size: 14px;
+    }
+
+    .form-group input {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-login {
+        padding: 14px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    .info-box {
+        margin-top: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border-left: 4px solid #667eea;
+    }
+
+    .info-box h3 {
+        color: #667eea;
+        margin-bottom: 10px;
+        font-size: 16px;
+    }
+
+    .info-box p {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .info-box code {
+        background: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        color: #e83e8c;
+    }
+
+    body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .container {
+        box-shadow: none;
+        background: transparent;
+    }
+
+    .header {
+        display: none;
+    }
+
+    .content {
+        padding: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+    <h2 style="text-align: center; margin-bottom: 30px; color: #333;">Connexion</h2>
+
+    <form method="POST" class="login-form">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur</label>
+            <input type="text" id="username" name="username" required autofocus>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+
+        <button type="submit" class="btn-login">Se connecter</button>
+    </form>
+
+    <div class="info-box">
+        <h3>🔐 Connexion par défaut</h3>
+        <p>
+            <strong>Utilisateur:</strong> <code>admin</code><br>
+            <strong>Mot de passe:</strong> <code>admin123</code>
+        </p>
+        <p style="margin-top: 10px; color: #e74c3c; font-weight: 500;">
+            ⚠️ Changez ces identifiants en production!
+        </p>
+    </div>
+</div>
+{% endblock %}

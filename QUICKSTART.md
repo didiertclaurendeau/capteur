@@ -42,7 +42,9 @@ go build -o capteur .
 
 ## Utilisation
 
-### Démarrer une capture
+### Mode Local (sauvegarde locale + vidéo)
+
+#### Démarrer une capture
 ```bash
 # Windows
 capteur.exe --text "Ma Session" --interval 5
@@ -50,6 +52,34 @@ capteur.exe --text "Ma Session" --interval 5
 # Mac/Linux
 ./capteur --text "Ma Session" --interval 5
 ```
+
+### Mode Upload (envoi vers serveur)
+
+#### 1. Démarrer le serveur Flask
+```bash
+cd server
+
+# Windows
+start_server.bat
+
+# Mac/Linux
+chmod +x start_server.sh
+./start_server.sh
+```
+
+#### 2. Démarrer une capture avec upload
+```bash
+# Windows
+capteur.exe --text "Ma Session" --url http://localhost:5000/upload --id mon_pc
+
+# Mac/Linux
+./capteur --text "Ma Session" --url http://localhost:5000/upload --id mon_pc
+```
+
+#### 3. Voir les images
+Ouvrez votre navigateur: `http://localhost:5000`
+- Username: `admin`
+- Password: `admin123`
 
 ### Arrêter la capture
 Appuyez sur **Ctrl+C**

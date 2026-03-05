@@ -1,0 +1,36 @@
+# Service systemd pour le serveur Capteur
+# Placez ce fichier dans /etc/systemd/system/capteur.service
+
+[Unit]
+Description=Capteur - Screenshot Upload Server
+After=network.target redis.service
+Wants=redis.service
+
+[Service]
+Type=notify
+User=www-data
+Group=www-data
+WorkingDirectory=/chemin/vers/capteur/server
+Environment="PATH=/chemin/vers/capteur/server/venv/bin"
+Environment="SECRET_KEY=CHANGEZ_CETTE_CLE_SECRETE_TRES_LONGUE"
+
+# Démarrer avec Gunicorn
+ExecStart=/chemin/vers/capteur/server/venv/bin/gunicorn \
+    --workers 4 \
+    --bind 127.0.0.1:5002 \
+    --timeout 300 \
+    --access-logfile /var/log/capteur/access.log \
+    --error-logfile /var/log/capteur/error.log \
+    --log-level info \
+    --capture-output \
+    app:app
+
+# Redémarrage automatique en cas d'échec
+Restart=always
+RestartSec=10
+
+# Limites de ressources (ajustez selon vos besoins)
+LimitNOFILE=4096
+
+[Install]
+WantedBy=multi-user.target

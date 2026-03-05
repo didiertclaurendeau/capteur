@@ -12,6 +12,26 @@ Application portable pour capturer des screenshots à intervalles réguliers et 
 - ✅ **Compression vidéo**: Utilise H.264 pour des fichiers de taille optimale
 - ✅ **Portable**: Un seul exécutable, aucune installation nécessaire
 - ✅ **Configurable**: Intervalle, FPS, texte, taille de police via ligne de commande
+- ✅ **Mode Upload**: Envoi des images vers un serveur Flask en temps réel
+- ✅ **Serveur Web**: Interface web avec authentification pour visualiser les images
+- ✅ **Miniatures automatiques**: Génération automatique de thumbnails
+- ✅ **Rotation d'images**: Conservation des N dernières images par moniteur
+
+## Modes de fonctionnement
+
+### Mode Local (par défaut)
+Les captures d'écran sont sauvegardées localement et converties en vidéo à la fin.
+```bash
+capteur --text "Ma Session" --interval 5
+```
+
+### Mode Upload (avec serveur)
+Les captures d'écran sont envoyées en temps réel vers un serveur Flask.
+```bash
+capteur --text "Ma Session" --url http://localhost:5000/upload --id mon_client
+```
+
+Voir [server/README.md](server/README.md) pour la documentation complète du serveur.
 
 ## Prérequis
 
@@ -76,6 +96,8 @@ capteur --text "Votre texte ici" [options]
 | `--fps` | `-f` | Frame rate de la vidéo de sortie | 5 | Non |
 | `--output` | `-o` | Répertoire de sortie | ./output | Non |
 | `--fontsize` | `-s` | Taille de la police du texte | 48.0 | Non |
+| `--url` | `-u` | URL du serveur pour upload (mode serveur) | - | Non |
+| `--id` | `-d` | ID du client (généré auto si omis) | - | Non |
 
 ### Exemples
 
@@ -97,6 +119,23 @@ capteur --text "Projet XYZ" --fontsize 72 --output ./mes_captures
 #### Version courte (avec alias)
 ```bash
 capteur -t "Demo" -i 3 -f 15 -o ./demo
+```
+
+### Exemples avec le mode Upload
+
+#### Upload vers serveur local avec ID personnalisé
+```bash
+capteur --text "Session 2024" --url http://localhost:5000/upload --id poste_bureau
+```
+
+#### Upload vers serveur distant avec ID auto-généré
+```bash
+capteur --text "Monitoring" --url http://192.168.1.100:5000/upload --interval 10
+```
+
+#### Upload avec tous les paramètres
+```bash
+capteur -t "Projet XYZ" -u http://server.local:5000/upload -d client_123 -i 5
 ```
 
 ### Arrêter la capture
@@ -188,6 +227,56 @@ Si les vidéos sont trop volumineuses:
 2. Réduisez le FPS de sortie (ex: 2 au lieu de 5)
 3. Augmentez l'intervalle entre captures (ex: 10s au lieu de 5s)
 
+### Erreurs d'upload vers le serveur
+- Vérifiez que le serveur Flask est démarré
+- Vérifiez l'URL (doit se terminer par `/upload`)
+- Vérifiez que le serveur est accessible (ping, pare-feu)
+- Consultez les logs du serveur pour plus de détails
+
+## Serveur Flask
+
+Le projet inclut un serveur Flask optionnel pour recevoir et visualiser les images en temps réel.
+
+### Installation du serveur
+
+```bash
+cd server
+pip install -r requirements.txt
+```
+
+### Démarrage du serveur
+
+```bash
+# Windows
+cd server
+start_server.bat
+
+# Mac/Linux
+cd server
+chmod +x start_server.sh
+./start_server.sh
+```
+
+Le serveur démarre sur `http://0.0.0.0:5000`
+
+### Connexion par défaut
+- **Username**: `admin`
+- **Password**: `admin123`
+
+⚠️ Changez ces identifiants en production!
+
+### Fonctionnalités du serveur
+- 🔐 Authentification utilisateur
+- 📸 Réception d'images via HTTP POST
+- 🖼️ Galerie web avec miniatures
+- 🔍 Vue détaillée avec zoom
+- 📁 Organisation par client
+- 🔄 Rotation automatique (conserve les 3 dernières images)
+- ⚡ Miniatures générées automatiquement
+
+### Documentation complète
+Voir [server/README.md](server/README.md) pour la documentation complète du serveur.
+
 ## Désinstallation
 
 Pour supprimer l'application, effacez simplement:
@@ -198,11 +287,20 @@ Aucune trace n'est laissée dans le système.
 
 ## Architecture technique
 
+### Client (Go)
 - **Langage**: Go 1.21+
 - **Capture d'écran**: `github.com/kbinani/screenshot` (cross-plateforme)
 - **Overlay graphique**: `github.com/fogleman/gg` (basé sur Cairo)
 - **Encodage vidéo**: FFmpeg avec H.264
 - **CLI**: `github.com/spf13/pflag`
+- **HTTP Client**: Package standard `net/http`
+
+### Serveur (Flask)
+- **Framework**: Flask 3.0
+- **Traitement d'images**: Pillow (PIL)
+- **Authentification**: Werkzeug Security
+- **Stockage**: Système de fichiers + JSON
+- **Interface**: HTML/CSS moderne avec responsive design
 
 ## Licence
 

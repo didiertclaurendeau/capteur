@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Détail Image{% endblock %}
+
+{% block header %}Détail de l'Image{% endblock %}
+
+{% block extra_style %}
+<style>
+    .back-link {
+        display: inline-block;
+        margin-bottom: 20px;
+        color: #667eea;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .back-link:hover {
+        color: #764ba2;
+        transform: translateX(-5px);
+    }
+
+    .detail-container {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .image-container {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .image-container img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .info-panel {
+        background: #f8f9fa;
+        border-radius: 15px;
+        padding: 25px;
+    }
+
+    .info-panel h2 {
+        color: #333;
+        font-size: 22px;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #667eea;
+    }
+
+    .info-item {
+        margin-bottom: 20px;
+    }
+
+    .info-item label {
+        display: block;
+        font-weight: 600;
+        color: #666;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+    }
+
+    .info-item value {
+        display: block;
+        font-size: 16px;
+        color: #333;
+        padding: 10px;
+        background: white;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 8px 15px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .actions {
+        margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-full {
+        width: 100%;
+        text-align: center;
+    }
+
+    @media (max-width: 1024px) {
+        .detail-container {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('gallery') }}" class="back-link">← Retour à la galerie</a>
+
+<div class="detail-container">
+    <div class="image-container">
+        <img src="{{ url_for('get_fullimage', filename=filename) }}" alt="{{ filename }}" id="mainImage">
+    </div>
+
+    <div class="info-panel">
+        <h2>📋 Informations</h2>
+
+        {% if image_info %}
+        <div class="info-item">
+            <label>Client ID</label>
+            <value>{{ image_info.client_id }}</value>
+        </div>
+
+        <div class="info-item">
+            <label>Moniteur</label>
+            <value>
+                <span class="badge">Moniteur {{ image_info.monitor_id }}</span>
+            </value>
+        </div>
+
+        <div class="info-item">
+            <label>Nom du fichier</label>
+            <value>{{ filename }}</value>
+        </div>
+
+        <div class="info-item">
+            <label>Date et heure</label>
+            <value>
+                📅 {{ image_info.timestamp[:10] }}<br>
+                🕐 {{ image_info.timestamp[11:19] }}
+            </value>
+        </div>
+        {% else %}
+        <div class="info-item">
+            <label>Nom du fichier</label>
+            <value>{{ filename }}</value>
+        </div>
+        {% endif %}
+
+        <div class="actions">
+            <a href="{{ url_for('get_fullimage', filename=filename) }}" download="{{ filename }}"
+                class="btn btn-primary btn-full">
+                💾 Télécharger l'image
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enable zoom on click
+    const img = document.getElementById('mainImage');
+    let zoomed = false;
+
+    img.style.cursor = 'zoom-in';
+    img.addEventListener('click', function () {
+        if (!zoomed) {
+            this.style.transform = 'scale(1.5)';
+            this.style.cursor = 'zoom-out';
+            zoomed = true;
+        } else {
+            this.style.transform = 'scale(1)';
+            this.style.cursor = 'zoom-in';
+            zoomed = false;
+        }
+    });
+
+    img.style.transition = 'transform 0.3s ease';
+</script>
+{% endblock %}

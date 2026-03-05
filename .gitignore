@@ -31,4 +31,17 @@ desktop.ini
 dist/
 build/
 
+# Python/Flask
+server/venv/
+server/__pycache__/
+server/*.pyc
+server/uploads/
+server/thumbnails/
+server/users.json
+server/metadata.json
+server/flask_session/
+server/.env
+*.egg-info/
+.pytest_cache/
+
 
